@@ -78,3 +78,29 @@ def reset_all_personas(db: Session) -> int:
     db.commit()
     return deleted_count
 
+
+def exportar_personas_csv(db: Session) -> str:
+    """Build full CSV string for all Personas."""
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(_CSV_HEADER)
+    for p in db.query(Persona).order_by(Persona.id).all():
+        birth = p.birth_date.isoformat() if isinstance(p.birth_date, date) else ""
+        writer.writerow(
+            [
+                p.id,
+                p.first_name,
+                p.last_name,
+                p.email,
+                p.phone or "",
+                birth,
+                str(p.is_active).lower(),
+                p.notes or "",
+            ]
+        )
+    return output.getvalue()
+
+
+def iter_csv_content(content: str):
+    """Yield CSV bytes for StreamingResponse."""
+    yield content.encode("utf-8")
