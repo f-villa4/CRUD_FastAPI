@@ -19,3 +19,12 @@ def buscar_personas(db: Session, termino: str):
         )
         .all()
     )
+
+def reporte_activos(db: Session):
+    """Return active Personas."""
+
+    return (
+        db.query(Persona)
+        .filter(Persona.is_active.is_(True))
+        .all()
+    )
