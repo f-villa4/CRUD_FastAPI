@@ -50,7 +50,7 @@ def estadisticas_edad(db: Session = Depends(get_db)) -> dict[str, Any]:
 
 @router.get(
     "/cumpleanios/mes/{numero_mes}",
-    response_model=List[PersonaLabRead
+    response_model=List[PersonaLabRead]
 )
 def cumpleanios_mes(
     numero_mes: int,
