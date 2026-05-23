@@ -43,6 +43,20 @@ class PersonaRead(BaseModel):
 
     model_config = {"from_attributes": True}
 
+
+class PersonaLabRead(BaseModel):
+    """Persona payload for lab endpoints (no created_at)."""
+    id: int
+    first_name: str
+    last_name: str
+    email: EmailStr
+    phone: str | None
+    birth_date: date | None
+    is_active: bool
+    notes: str | None
+
+    model_config = {"from_attributes": True}
+
 class PersonaActivaReport(BaseModel):
     """Projection for active users report."""
 

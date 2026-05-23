@@ -3,8 +3,16 @@ from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
 from ..database import get_db
-from ..views.persona import PersonaCreate, PersonaUpdate, PersonaRead
-from ..services import persona_service
+from ..views.persona import (
+    PersonaActivaReport,
+    BulkDesactivarRequest,
+    BulkDesactivarResponse,
+    PersonaCreate,
+    PersonaLabRead,
+    PersonaRead,
+    PersonaUpdate,
+)
+from ..services import persona_service, persona_busqueda_bulk
 
 router = APIRouter(prefix="/personas", tags=["personas"])
 
@@ -24,6 +32,12 @@ def list_personas(
 ):
     """List Personas with pagination via service layer."""
     return persona_service.list_personas(db, skip=skip, limit=limit)
+
+@router.get("/buscar/{termino}", response_model=List[PersonaLabRead])
+def buscar_personas(termino: str, db: Session = Depends(get_db)):
+    """Search term in first_name, last_name or email."""
+
+    return persona_busqueda_bulk.buscar_personas(db, termino)
 
 
 @router.get("/{persona_id}", response_model=PersonaRead)
