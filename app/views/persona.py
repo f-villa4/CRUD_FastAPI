@@ -52,3 +52,17 @@ class PersonaActivaReport(BaseModel):
     is_active: bool
 
     model_config = {"from_attributes": True}
+
+class BulkDesactivarRequest(BaseModel):
+    """Schema for bulk deactivate request."""
+
+    ids: list[int]
+
+
+class BulkDesactivarResponse(BaseModel):
+    """Schema for bulk deactivate response."""
+
+    message: str
+    desactivados: list[int]
+    no_encontrados: list[int]
+    total_desactivados: int
