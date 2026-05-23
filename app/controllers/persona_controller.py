@@ -1,10 +1,20 @@
-from typing import List
-from fastapi import APIRouter, Depends, Query, status
+from typing import Any, List
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from ..database import get_db
-from ..views.persona import PersonaCreate, PersonaUpdate, PersonaRead
+
+from ..views.persona import (
+    PersonaCreate,
+    PersonaLabRead,
+    PersonaRead,
+    PersonaUpdate,
+)
+
+from ..services import persona_analitica_fechas
 from ..services import persona_service
+
 
 router = APIRouter(prefix="/personas", tags=["personas"])
 
@@ -24,6 +34,14 @@ def list_personas(
 ):
     """List Personas with pagination via service layer."""
     return persona_service.list_personas(db, skip=skip, limit=limit)
+
+#analítica SQL y filtros por fecha
+
+@router.get("/estadisticas/dominios")
+def estadisticas_dominios(db: Session = Depends(get_db)) -> dict[str, int]:
+    """Count Personas per email domain."""
+    return persona_analitica_fechas.estadisticas_dominios(db)
+
 
 @router.get("/{persona_id}", response_model=PersonaRead)
 def get_persona(persona_id: int, db: Session = Depends(get_db)):
