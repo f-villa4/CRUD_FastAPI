@@ -42,3 +42,20 @@ class PersonaRead(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class PoblarRequest(BaseModel):
+    """Schema for bulk populate request."""
+    cantidad: int
+
+
+class PoblarResponse(BaseModel):
+    """Schema for bulk populate response."""
+    message: str
+    status: int
+
+
+class ResetResponse(BaseModel):
+    """Schema for reset response."""
+    message: str
+    deleted_count: int
