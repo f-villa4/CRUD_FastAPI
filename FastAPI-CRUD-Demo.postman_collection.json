@@ -72,6 +72,42 @@
             "header": [],
             "url": { "raw": "{{base_url}}/personas/{{persona_id}}", "host": ["{{base_url}}"], "path": ["personas", "{{persona_id}}"] }
           }
+        },
+        {
+          "name": "Sofía - Estadísticas dominios",
+          "request": {
+          "method": "GET",
+          "url": {"raw": "{{base_url}}/personas/estadisticas/dominios",
+          "host": ["{{base_url}}"],
+          "path": ["personas", "estadisticas", "dominios"] }
+          }
+        },
+        {
+          "name": "Sofía - Estadísticas edad",
+          "request": {
+          "method": "GET",
+          "url": {"raw": "{{base_url}}/personas/estadisticas/edad",
+          "host": ["{{base_url}}"],
+          "path": ["personas", "estadisticas", "edad"] }
+          }
+        },
+        {
+          "name": "Sofía - Cumpleaños mes",
+          "request": {
+          "method": "GET",
+          "url": {"raw": "{{base_url}}/personas/cumpleanios/mes/12",
+          "host": ["{{base_url}}"],
+          "path": ["personas", "cumpleanios", "mes", "12"] }
+          }
+        },
+        {
+          "name": "Sofía - Cumpleaños mes inválido",
+          "request": {
+          "method": "GET",
+          "url": {"raw": "{{base_url}}/personas/cumpleanios/mes/13",
+          "host": ["{{base_url}}"],
+          "path": ["personas", "cumpleanios", "mes", "13"] }
+          }
         }
       ]
     }
