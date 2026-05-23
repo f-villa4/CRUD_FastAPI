@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, status, HTTPException
 from sqlalchemy.orm import Session
 
 from ..database import get_db
@@ -45,6 +45,25 @@ def reporte_activos(db: Session = Depends(get_db)):
 
     return persona_busqueda_bulk.reporte_activos(db)
 
+@router.patch("/bulk/desactivar", response_model=BulkDesactivarResponse)
+def bulk_desactivar(
+    body: BulkDesactivarRequest,
+    db: Session = Depends(get_db)
+):
+    """Deactivate multiple Personas by ID."""
+
+    if not body.ids or len(body.ids) > 100:
+        raise HTTPException(
+            status_code=400,
+            detail="La lista de ids debe tener entre 1 y 100 elementos.",
+        )
+
+    result = persona_busqueda_bulk.bulk_desactivar(
+        db,
+        body.ids
+    )
+
+    return BulkDesactivarResponse(**result)
 
 @router.get("/{persona_id}", response_model=PersonaRead)
 def get_persona(persona_id: int, db: Session = Depends(get_db)):
