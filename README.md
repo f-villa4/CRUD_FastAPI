@@ -53,6 +53,82 @@ DATABASE_URL=mysql+pymysql://usuario:contraseña@localhost:3306/nombre_basedatos
 - `PUT /personas/{id}` → actualizar (parcial) persona
 - `DELETE /personas/{id}` → eliminar persona
 
+# Responsabilidades — María Elizabeth Gómez Urrea
+
+
+| Integrante | Puntos del laboratorio | Responsabilidad | Rama | Endpoints |
+|------------|------------------------|-----------------|------|-----------|
+| María Elizabeth Gómez Urrea | Puntos 3 y 5 | Búsqueda, proyección y bulk| `feature/busqueda-bulk` | `GET /personas/buscar/{termino}`, `GET /personas/reporte/activos`, `PATCH /personas/bulk/desactivar` |
+### Endpoints de Elizabeth
+
+#### GET /personas/buscar/{termino}
+Busca un término de forma general en los campos `first_name`, `last_name`  o `email` utilizando el operador lógico OR.
+
+Validación: Si no se encuentran coincidencias en la base de datos, no debe fallar; simplemente responde un arreglo vacío [] con un estado 200 OK.
+
+Response 200 OK (Con resultados):
+```text
+[
+  {
+    "id": 5,
+    "first_name": "Sofía",
+    "last_name": "Lopez",
+    "email": "sofia.lopez@gmail.com",
+    "phone": "+57 3123456789",
+    "birth_date": "1998-12-05",
+    "is_active": true,
+    "notes": "Estudiante de analítica"
+  }
+]
+````
+Response 200 OK (Sin resultados):
+
+```text
+[]
+```
+#### GET /personas/reporte/activos
+Genera un listado filtrado únicamente con aquellos usuarios que se encuentran activos (is_active = true).
+
+Proyección: Para optimizar la transferencia de datos, la respuesta se limita estrictamente a proyectar cuatro campos específicos: id, email, phone e is_active.
+
+Response 200 OK:
+
+```text 
+[
+  {
+    "id": 3,
+    "email": "felipe.villa@outlook.com",
+    "phone": "+57 3001234567",
+    "is_active": true
+  },
+  {
+    "id": 7,
+    "email": "elizabeth.gomez@gmail.com",
+    "phone": null,
+    "is_active": true
+  }
+]
+````
+####  PATCH /personas/bulk/desactivar
+Recibe un listado de identificadores numéricos para desactivar de forma masiva el estado de las personas (is_active = false).
+
+Validación: La lista de IDs enviada en el cuerpo de la petición no puede estar vacía y debe contener un máximo de 100 elementos; de lo contrario, responde un 400 Bad Request. Los IDs que no existan en la base de datos no detienen la transacción.
+
+Request:
+```text 
+{
+  "ids": [3, 7, 14, 999]
+}
+```
+Response 200 OK:
+```text 
+{
+  "message": "Operación completada.",
+  "desactivados": [3, 7, 14],
+  "no_encontrados": [999],
+  "total_desactivados": 3
+}
+```
 ### Esquemas (JSON)
 
 - Crear:
