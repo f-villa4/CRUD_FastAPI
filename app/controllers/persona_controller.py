@@ -42,6 +42,10 @@ def estadisticas_dominios(db: Session = Depends(get_db)) -> dict[str, int]:
     """Count Personas per email domain."""
     return persona_analitica_fechas.estadisticas_dominios(db)
 
+@router.get("/estadisticas/edad")
+def estadisticas_edad(db: Session = Depends(get_db)) -> dict[str, Any]:
+    """Average, min and max age from birth_date."""
+    return persona_analitica_fechas.estadisticas_edad(db)
 
 @router.get("/{persona_id}", response_model=PersonaRead)
 def get_persona(persona_id: int, db: Session = Depends(get_db)):
