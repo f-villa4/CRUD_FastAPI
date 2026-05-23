@@ -28,3 +28,34 @@ def reporte_activos(db: Session):
         .filter(Persona.is_active.is_(True))
         .all()
     )
+
+def bulk_desactivar(db: Session, ids: list[int]) -> dict:
+    """Set is_active=False for existing ids; report missing ids."""
+
+    unique_ids = list(dict.fromkeys(ids))
+
+    found = (
+        db.query(Persona)
+        .filter(Persona.id.in_(unique_ids))
+        .all()
+    )
+
+    found_ids = {p.id for p in found}
+
+    desactivados = sorted(found_ids)
+
+    no_encontrados = sorted(
+        i for i in unique_ids if i not in found_ids
+    )
+
+    for persona in found:
+        persona.is_active = False
+
+    db.commit()
+
+    return {
+        "message": "Operación completada.",
+        "desactivados": desactivados,
+        "no_encontrados": no_encontrados,
+        "total_desactivados": len(desactivados),
+    }
