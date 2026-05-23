@@ -39,7 +39,7 @@ def estadisticas_edad(db: Session) -> dict[str, Any]:
         .filter(Persona.birth_date.isnot(None))
         .one()
     )
-    
+
     if row.promedio is None:
         return {
             "edad_promedio": 0,
@@ -52,3 +52,15 @@ def estadisticas_edad(db: Session) -> dict[str, Any]:
         "edad_minima": int(row.minima),
         "edad_maxima": int(row.maxima),
     }
+
+def cumpleanios_por_mes(db: Session, numero_mes: int):
+    """Return Personas with birthday in the given month."""
+
+    return (
+        db.query(Persona)
+        .filter(
+            Persona.birth_date.isnot(None),
+            extract("month", Persona.birth_date) == numero_mes,
+        )
+        .all()
+    )
