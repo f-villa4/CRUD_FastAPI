@@ -70,3 +70,11 @@ def poblar_personas(db: Session, cantidad: int) -> int:
     db.add_all(batch)
     db.commit()
     return cantidad
+
+
+def reset_all_personas(db: Session) -> int:
+    """Delete all rows and return deleted count."""
+    deleted_count = db.query(Persona).delete()
+    db.commit()
+    return deleted_count
+
