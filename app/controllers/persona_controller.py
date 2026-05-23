@@ -39,6 +39,12 @@ def buscar_personas(termino: str, db: Session = Depends(get_db)):
 
     return persona_busqueda_bulk.buscar_personas(db, termino)
 
+@router.get("/reporte/activos", response_model=List[PersonaActivaReport])
+def reporte_activos(db: Session = Depends(get_db)):
+    """List active Personas with projected fields."""
+
+    return persona_busqueda_bulk.reporte_activos(db)
+
 
 @router.get("/{persona_id}", response_model=PersonaRead)
 def get_persona(persona_id: int, db: Session = Depends(get_db)):
