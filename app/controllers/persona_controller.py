@@ -9,6 +9,7 @@ from ..views.persona import (
     PersonaRead,
     PoblarRequest,
     PoblarResponse,
+    ResetResponse,
 )
 from ..services import persona_service
 from ..services import persona_masivas
@@ -48,6 +49,16 @@ def poblar_personas(body: PoblarRequest, db: Session = Depends(get_db)):
     return PoblarResponse(
         message=f"{n} usuarios creados exitosamente",
         status=201,
+    )
+    
+    
+@router.delete("/reset", response_model=ResetResponse)
+def reset_personas(db: Session = Depends(get_db)):
+    """Delete all Personas from the table."""
+    deleted_count = persona_masivas.reset_all_personas(db)
+    return ResetResponse(
+        message="Base de datos limpiada. Se eliminaron todos los registros.",
+        deleted_count=deleted_count,
     )
 
 @router.get("/{persona_id}", response_model=PersonaRead)
