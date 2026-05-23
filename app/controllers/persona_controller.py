@@ -1,10 +1,17 @@
 from typing import List
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from ..database import get_db
-from ..views.persona import PersonaCreate, PersonaUpdate, PersonaRead
+from ..views.persona import (
+    PersonaCreate,
+    PersonaUpdate,
+    PersonaRead,
+    PoblarRequest,
+    PoblarResponse,
+)
 from ..services import persona_service
+from ..services import persona_masivas
 
 router = APIRouter(prefix="/personas", tags=["personas"])
 
@@ -25,6 +32,23 @@ def list_personas(
     """List Personas with pagination via service layer."""
     return persona_service.list_personas(db, skip=skip, limit=limit)
 
+
+# --- Lab: masivas y exportación CSV (Felipe Villa Velásquez) ---
+
+
+@router.post("/poblar", response_model=PoblarResponse, status_code=status.HTTP_201_CREATED)
+def poblar_personas(body: PoblarRequest, db: Session = Depends(get_db)):
+    """Bulk insert Personas using Faker."""
+    if body.cantidad <= 0 or body.cantidad > 1000:
+        raise HTTPException(
+            status_code=400,
+            detail="cantidad debe estar entre 1 y 1000",
+        )
+    n = persona_masivas.poblar_personas(db, body.cantidad)
+    return PoblarResponse(
+        message=f"{n} usuarios creados exitosamente",
+        status=201,
+    )
 
 @router.get("/{persona_id}", response_model=PersonaRead)
 def get_persona(persona_id: int, db: Session = Depends(get_db)):
