@@ -61,3 +61,12 @@ def _build_persona(db: Session, existing_emails: set[str]) -> Persona:
         is_active=bool(random.getrandbits(1)),
         notes=notes,
     )
+    
+    
+def poblar_personas(db: Session, cantidad: int) -> int:
+    """Insert cantidad Personas generated with Faker."""
+    existing_emails: set[str] = set()
+    batch = [_build_persona(db, existing_emails) for _ in range(cantidad)]
+    db.add_all(batch)
+    db.commit()
+    return cantidad
