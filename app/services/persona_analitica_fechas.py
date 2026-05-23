@@ -23,11 +23,13 @@ def estadisticas_dominios(db: Session) -> dict[str, int]:
 
 def estadisticas_edad(db: Session) -> dict[str, Any]:
     """Return average, min and max age from birth_date."""
+
     edad = func.timestampdiff(
         literal_column("YEAR"),
         Persona.birth_date,
         func.curdate(),
     )
+
     row = (
         db.query(
             func.avg(edad).label("promedio"),
@@ -37,6 +39,14 @@ def estadisticas_edad(db: Session) -> dict[str, Any]:
         .filter(Persona.birth_date.isnot(None))
         .one()
     )
+    
+    if row.promedio is None:
+        return {
+            "edad_promedio": 0,
+            "edad_minima": 0,
+            "edad_maxima": 0,
+        }
+    
     return {
         "edad_promedio": int(round(float(row.promedio))),
         "edad_minima": int(row.minima),
