@@ -47,6 +47,29 @@ def estadisticas_edad(db: Session = Depends(get_db)) -> dict[str, Any]:
     """Average, min and max age from birth_date."""
     return persona_analitica_fechas.estadisticas_edad(db)
 
+
+@router.get(
+    "/cumpleanios/mes/{numero_mes}",
+    response_model=List[PersonaLabRead
+)
+def cumpleanios_mes(
+    numero_mes: int,
+    db: Session = Depends(get_db)
+):
+    """Personas with birthday in the given month (1-12)."""
+
+    if numero_mes < 1 or numero_mes > 12:
+        raise HTTPException(
+            status_code=400,
+            detail="El mes debe ser un entero entre 1 y 12.",
+        )
+
+    return persona_analitica_fechas.cumpleanios_por_mes(
+        db,
+        numero_mes
+    )
+
+
 @router.get("/{persona_id}", response_model=PersonaRead)
 def get_persona(persona_id: int, db: Session = Depends(get_db)):
     """Retrieve a Persona by ID via service layer."""
