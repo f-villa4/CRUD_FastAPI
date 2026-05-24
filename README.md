@@ -1,4 +1,4 @@
-# README.md - Laboratorio 1 API REST con FastAPI
+# Laboratorio 1 API REST con FastAPI
 
 ## Contexto del proyecto
 
