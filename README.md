@@ -1,209 +1,343 @@
-# FastAPI Persona CRUD (MySQL por defecto)
+# README.md - Laboratorio 1 API REST con FastAPI
 
-Proyecto de demostración con FastAPI + SQLAlchemy y estructura MVC para un CRUD de `Persona`. Usa MySQL por defecto y permite apuntar a otra base SQL mediante la variable de entorno `DATABASE_URL` (configurable en `.env`).
+## Contexto del proyecto
 
-## Requisitos
+Esta aplicacion es una API REST construida con FastAPI, SQLAlchemy y MySQL para administrar registros de personas. El proyecto base ya incluye un CRUD sobre el recurso `Persona`, y en este laboratorio se extendio con 9 endpoints nuevos orientados a carga masiva de datos, analitica SQL, busqueda, filtros por fecha, operaciones bulk y exportacion CSV.
 
-- Python 3.10+ (recomendado 3.11)
+La aplicacion sirve para:
 
-## Instalación y ejecución
+- Crear, listar, consultar, actualizar y eliminar personas.
+- Poblar la base de datos con datos realistas usando Faker.
+- Ejecutar consultas analiticas sobre correos, edades y fechas de nacimiento.
+- Buscar personas por nombre, apellido o correo.
+- Generar reportes reducidos de personas activas.
+- Desactivar multiples personas en una sola operacion.
+- Exportar los registros de la tabla `personas` en formato CSV.
 
-1. Crear entorno virtual e instalar dependencias:
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   pip install -r requirements.txt
-   ```
+El modelo `Persona` contiene los campos:
 
-2. Configurar variables de entorno:
-   ```bash
-   cp .env.example .env
-   # Edita .env con tus credenciales de MySQL
-   # Por defecto: DATABASE_URL=mysql+pymysql://user:password@localhost:3306/fastapi_demo
-   ```
+- `id`
+- `first_name`
+- `last_name`
+- `email`
+- `phone`
+- `birth_date`
+- `is_active`
+- `notes`
+- `created_at`
 
-3. Ejecutar el servidor:
-   ```bash
-   uvicorn app.main:app --reload
-   ```
+## Tecnologias usadas
 
-4. Documentación interactiva:
-   - Swagger UI: <http://localhost:8000/docs>
-   - ReDoc: <http://localhost:8000/redoc>
+- Python 3.10+
+- FastAPI
+- Uvicorn
+- SQLAlchemy
+- MySQL
+- PyMySQL
+- Pydantic
+- Faker
+- Postman
 
-## Conexión a otras bases de datos
+La arquitectura mantiene una separacion tipo MVC:
 
-Edita `DATABASE_URL` en `.env`.
-- MySQL: `mysql+pymysql://user:password@localhost:3306/mydb`
+- `models/`: definicion de tablas con SQLAlchemy.
+- `views/`: schemas de entrada y salida con Pydantic.
+- `controllers/`: rutas HTTP de FastAPI.
+- `services/`: logica de negocio y consultas a base de datos.
 
-> Nota: Instala el driver correspondiente (psycopg2, PyMySQL, pyodbc, etc.).
+## Requisitos previos
 
-## Ejemplo de `.env` (MySQL local)
+Antes de ejecutar el proyecto debes tener instalado:
+
+- Python 3.10 o superior.
+- MySQL Server activo.
+- Postman, si quieres importar y probar la coleccion.
+
+Tambien debes tener creada una base de datos en MySQL. Por ejemplo:
+
+```sql
+CREATE DATABASE fastapi_demo;
+```
+
+## Ejecucion paso a paso
+
+### 1. Realizar `git clone` al repositorio
+
+```powershell
+git clone https://github.com/f-villa4/CRUD_FastAPI.git
+```
+
+
+### 2. Crear el entorno virtual
+
+```powershell
+python -m venv .venv
+```
+
+### 3. Activar el entorno virtual
+
+En PowerShell:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+Si PowerShell bloquea la activacion por politicas de ejecucion, puedes usar:
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+Luego intenta activar el entorno virtual nuevamente.
+
+### 4. Instalar dependencias
+
+```powershell
+pip install -r requirements.txt
+```
+
+El archivo `requirements.txt` incluye las dependencias necesarias para FastAPI, SQLAlchemy, MySQL y Faker.
+
+### 5. Configurar la conexion a MySQL
+
+Crea un archivo `.env` en la raiz del proyecto o edita el existente:
 
 ```env
-DATABASE_URL=mysql+pymysql://usuario:contraseña@localhost:3306/nombre_basedatos
+DATABASE_URL=mysql+pymysql://usuario:contrasena@localhost:3306/fastapi_demo
 ```
 
-## Endpoints principales
+Ajusta `usuario`, `contrasena`, host, puerto y nombre de base de datos segun tu instalacion local.
 
-- `GET /health` → estado del servicio
-- `POST /personas` → crear persona
-- `GET /personas` → listar personas (`skip`, `limit`)
-- `GET /personas/{id}` → obtener persona por ID
-- `PUT /personas/{id}` → actualizar (parcial) persona
-- `DELETE /personas/{id}` → eliminar persona
+### 6. Ejecutar el servidor
 
-# Responsabilidades — María Elizabeth Gómez Urrea
-
-
-| Integrante | Puntos del laboratorio | Responsabilidad | Rama | Endpoints |
-|------------|------------------------|-----------------|------|-----------|
-| María Elizabeth Gómez Urrea | Puntos 3 y 5 | Búsqueda, proyección y bulk| `feature/busqueda-bulk` | `GET /personas/buscar/{termino}`, `GET /personas/reporte/activos`, `PATCH /personas/bulk/desactivar` |
-### Endpoints de Elizabeth
-
-#### GET /personas/buscar/{termino}
-Busca un término de forma general en los campos `first_name`, `last_name`  o `email` utilizando el operador lógico OR.
-
-Validación: Si no se encuentran coincidencias en la base de datos, no debe fallar; simplemente responde un arreglo vacío [] con un estado 200 OK.
-
-Response 200 OK (Con resultados):
-```text
-[
-  {
-    "id": 5,
-    "first_name": "Sofía",
-    "last_name": "Lopez",
-    "email": "sofia.lopez@gmail.com",
-    "phone": "+57 3123456789",
-    "birth_date": "1998-12-05",
-    "is_active": true,
-    "notes": "Estudiante de analítica"
-  }
-]
-````
-Response 200 OK (Sin resultados):
-
-```text
-[]
+```powershell
+uvicorn app.main:app --reload
 ```
-#### GET /personas/reporte/activos
-Genera un listado filtrado únicamente con aquellos usuarios que se encuentran activos (is_active = true).
 
-Proyección: Para optimizar la transferencia de datos, la respuesta se limita estrictamente a proyectar cuatro campos específicos: id, email, phone e is_active.
+### 7. Abrir la documentacion interactiva
 
-Response 200 OK:
+Con el servidor activo, abre:
 
-```text 
-[
-  {
-    "id": 3,
-    "email": "felipe.villa@outlook.com",
-    "phone": "+57 3001234567",
-    "is_active": true
-  },
-  {
-    "id": 7,
-    "email": "elizabeth.gomez@gmail.com",
-    "phone": null,
-    "is_active": true
-  }
-]
-````
-####  PATCH /personas/bulk/desactivar
-Recibe un listado de identificadores numéricos para desactivar de forma masiva el estado de las personas (is_active = false).
+- Swagger UI: <http://127.0.0.1:8000/docs>
+- ReDoc: <http://127.0.0.1:8000/redoc>
 
-Validación: La lista de IDs enviada en el cuerpo de la petición no puede estar vacía y debe contener un máximo de 100 elementos; de lo contrario, responde un 400 Bad Request. Los IDs que no existan en la base de datos no detienen la transacción.
+### 8. Probar el estado de la API
 
-Request:
-```text 
+En PowerShell:
+
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/health" -Method GET
+```
+
+Respuesta esperada:
+
+```json
+{
+  "status": "ok"
+}
+```
+
+## Coleccion de Postman
+
+El archivo principal de Postman es:
+
+```text
+FastAPI-CRUD-Demo.postman_collection.json
+```
+
+Para usarlo:
+
+1. Abre Postman.
+2. Haz clic en `Import`.
+3. Selecciona `FastAPI-CRUD-Demo.postman_collection.json`.
+4. Verifica que la variable `base_url` tenga este valor:
+
+```text
+http://localhost:8000
+```
+
+La coleccion debe incluir las peticiones del CRUD original y las 9 peticiones nuevas del laboratorio.
+
+## Endpoints CRUD originales
+
+| Metodo | Ruta | Descripcion |
+|--------|------|-------------|
+| GET | `/health` | Verifica que la API este activa. |
+| POST | `/personas` | Crea una persona. |
+| GET | `/personas` | Lista personas con paginacion. |
+| GET | `/personas/{persona_id}` | Consulta una persona por ID. |
+| PUT | `/personas/{persona_id}` | Actualiza parcialmente una persona. |
+| DELETE | `/personas/{persona_id}` | Elimina una persona por ID. |
+
+Ejemplo para crear una persona:
+
+```json
+{
+  "first_name": "Juan",
+  "last_name": "Perez",
+  "email": "juan.perez@example.com",
+  "phone": "+57 3000000000",
+  "birth_date": "1990-05-20",
+  "is_active": true,
+  "notes": "Cliente frecuente"
+}
+```
+
+## Desarrollo por integrante
+De esta manera los integrantes desarrollaron el proyecto:
+
+| Integrante | Rama | Responsabilidad | Endpoints |
+|------------|------|-----------------|-----------|
+| Felipe Villa Velasquez | `feature/masivas` | Operaciones masivas y exportacion CSV | `POST /personas/poblar`, `DELETE /personas/reset`, `GET /personas/exportar/csv` |
+| Sofia Lopez Lopera | `feature/analitica-fechas` | Analitica SQL y filtros por fecha | `GET /personas/estadisticas/dominios`, `GET /personas/estadisticas/edad`, `GET /personas/cumpleanios/mes/{numero_mes}` |
+| Maria Elizabeth Gomez Urrea | `feature/busqueda-bulk` | Busqueda, proyeccion y operaciones bulk | `GET /personas/buscar/{termino}`, `GET /personas/reporte/activos`, `PATCH /personas/bulk/desactivar` |
+
+### Felipe Villa Velasquez - puntos 1 y 6
+
+Felipe implemento las operaciones masivas y la exportacion de datos. Su desarrollo se concentra en generar datos de prueba realistas, reiniciar la tabla de personas y entregar los datos en formato CSV.
+
+Endpoints:
+
+| Metodo | Ruta | Descripcion |
+|--------|------|-------------|
+| POST | `/personas/poblar` | Recibe una cantidad y crea personas automaticamente con Faker. |
+| DELETE | `/personas/reset` | Elimina todos los registros de la tabla `personas`. |
+| GET | `/personas/exportar/csv` | Exporta todos los registros en formato CSV. |
+
+Cambios principales:
+
+- Agrego `Faker` a `requirements.txt`.
+- Agrego los schemas `PoblarRequest`, `PoblarResponse` y `ResetResponse`.
+- Creo el servicio `persona_masivas.py`.
+- Implemento generacion de nombres, apellidos, correos con dominios reales, telefonos, fechas, estados y notas.
+- Implemento la validacion de `cantidad` entre 1 y 1000.
+- Implemento borrado total con retorno de `deleted_count`.
+- Implemento exportacion CSV con `StreamingResponse`.
+
+Ejemplo de `POST /personas/poblar`:
+
+```json
+{
+  "cantidad": 50
+}
+```
+
+Respuesta esperada:
+
+```json
+{
+  "message": "50 usuarios creados exitosamente",
+  "status": 201
+}
+```
+
+### Sofia Lopez Lopera - puntos 2 y 4
+
+Sofia implemento los endpoints de analitica y filtros por fecha. Su desarrollo permite comparar resultados de la API contra consultas SQL ejecutadas en DBeaver.
+
+Endpoints:
+
+| Metodo | Ruta | Descripcion |
+|--------|------|-------------|
+| GET | `/personas/estadisticas/dominios` | Agrupa personas por dominio de correo. |
+| GET | `/personas/estadisticas/edad` | Calcula edad promedio, minima y maxima. |
+| GET | `/personas/cumpleanios/mes/{numero_mes}` | Lista personas que cumplen anos en un mes especifico. |
+
+Cambios principales:
+
+- Agrego el schema `PersonaLabRead`.
+- Creo el servicio `persona_analitica_fechas.py`.
+- Implemento agrupacion por dominio usando la parte posterior al `@` del email.
+- Implemento calculo de edades con funciones SQL sobre `birth_date`.
+- Implemento filtro por mes usando funciones de fecha SQL.
+- Agrego validacion para que `numero_mes` este entre 1 y 12.
+
+Ejemplo de respuesta de `GET /personas/estadisticas/edad`:
+
+```json
+{
+  "edad_promedio": 34,
+  "edad_minima": 18,
+  "edad_maxima": 85
+}
+```
+
+Ejemplo de error para mes invalido:
+
+```json
+{
+  "detail": "El mes debe ser un entero entre 1 y 12."
+}
+```
+
+### Maria Elizabeth Gomez Urrea - puntos 3 y 5
+
+Elizabeth implemento los endpoints de busqueda, reporte de activos y desactivacion masiva. Su desarrollo permite consultar personas por termino, generar una proyeccion reducida de usuarios activos y actualizar varios registros en una sola operacion.
+
+Endpoints:
+
+| Metodo | Ruta | Descripcion |
+|--------|------|-------------|
+| GET | `/personas/buscar/{termino}` | Busca el termino en `first_name`, `last_name` o `email`. |
+| GET | `/personas/reporte/activos` | Retorna solo `id`, `email`, `phone` e `is_active` de usuarios activos. |
+| PATCH | `/personas/bulk/desactivar` | Desactiva multiples personas por ID y reporta IDs no encontrados. |
+
+Cambios principales:
+
+- Agrego los schemas `PersonaActivaReport`, `BulkDesactivarRequest` y `BulkDesactivarResponse`.
+- Creo el servicio `persona_busqueda_bulk.py`.
+- Implemento busqueda con operador OR sobre nombre, apellido y correo.
+- Implemento reporte de personas activas con proyeccion reducida.
+- Implemento desactivacion masiva con lista de IDs.
+- Agrego validacion para listas vacias o con mas de 100 IDs.
+- Reporta IDs inexistentes sin fallar la operacion.
+
+Ejemplo de `PATCH /personas/bulk/desactivar`:
+
+```json
 {
   "ids": [3, 7, 14, 999]
 }
 ```
-Response 200 OK:
-```text 
+
+Respuesta esperada:
+
+```json
 {
-  "message": "Operación completada.",
+  "message": "Operacion completada.",
   "desactivados": [3, 7, 14],
   "no_encontrados": [999],
   "total_desactivados": 3
 }
 ```
-### Esquemas (JSON)
 
-- Crear:
-  ```json
-  {
-    "first_name": "Juan",
-    "last_name": "Pérez",
-    "email": "juan.perez@example.com",
-    "phone": "+57 3000000000",
-    "birth_date": "1990-05-20",
-    "is_active": true,
-    "notes": "Cliente frecuente"
-  }
-  ```
+## Validaciones recomendadas en DBeaver
 
-- Actualizar (parcial):
-  ```json
-  {
-    "email": "juan.perez2@example.com",
-    "notes": "Actualizado"
-  }
-  ```
+Despues de ejecutar los endpoints, se recomienda contrastar con SQL:
 
-## Colección de Postman
+```sql
+SELECT COUNT(*) FROM personas;
 
-Importa `FastAPI-CRUD-Demo.postman_collection.json` en Postman. Variables:
+SELECT SUBSTRING_INDEX(email, '@', -1) AS dominio, COUNT(*) AS cantidad
+FROM personas
+GROUP BY dominio;
 
-- `base_url` (por defecto `http://localhost:8000`)
-- `persona_id` (por defecto `1`)
+SELECT
+  AVG(TIMESTAMPDIFF(YEAR, birth_date, CURDATE())) AS edad_promedio,
+  MIN(TIMESTAMPDIFF(YEAR, birth_date, CURDATE())) AS edad_minima,
+  MAX(TIMESTAMPDIFF(YEAR, birth_date, CURDATE())) AS edad_maxima
+FROM personas
+WHERE birth_date IS NOT NULL;
 
-## Notas
+SELECT *
+FROM personas
+WHERE MONTH(birth_date) = 12;
 
-- Las tablas se crean automáticamente al iniciar (solo con fines de demo).
-- Asegúrate de crear la base de datos en MySQL y de que el usuario tenga permisos (por ejemplo, `CREATE DATABASE fastapi_demo;`).
+SELECT id, email, phone, is_active
+FROM personas
+WHERE is_active = 1;
 
-## Estructura MVC
-
-- `app/models/` → modelos SQLAlchemy (por ejemplo, `persona.py`).
-- `app/views/` → esquemas Pydantic (por ejemplo, `persona.py`).
-- `app/controllers/` → routers/controladores FastAPI (por ejemplo, `persona_controller.py`).
-
-## Pruebas rápidas (curl)
-
-```bash
-# Health
-curl -s http://127.0.0.1:8000/health
-
-# Crear persona
-curl -s -X POST http://127.0.0.1:8000/personas \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "first_name":"Juan",
-    "last_name":"Perez",
-    "email":"juan.perez@example.com",
-    "phone":"+57 3000000000",
-    "birth_date":"1990-05-20",
-    "is_active":true,
-    "notes":"Cliente frecuente"
-  }'
-
-# Listar
-curl -s http://127.0.0.1:8000/personas
-
-# Obtener por ID
-curl -s http://127.0.0.1:8000/personas/1
-
-# Actualizar parcial
-curl -s -X PUT http://127.0.0.1:8000/personas/1 \
-  -H 'Content-Type: application/json' \
-  -d '{"email":"juan.perez2@example.com","notes":"Actualizado"}'
-
-# Eliminar
-curl -s -X DELETE http://127.0.0.1:8000/personas/1 -i
-
-## Detener el servidor
-
-- Si lo iniciaste en la misma terminal: usa `CTRL+C`.
-- Si corre en background, puedes cerrar esa terminal o matar el proceso de uvicorn (`pkill -f uvicorn`).
+SELECT id, is_active
+FROM personas
+WHERE id IN (3, 7, 14, 999);
+```

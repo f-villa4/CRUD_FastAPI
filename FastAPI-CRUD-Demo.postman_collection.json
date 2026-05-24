@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "FastAPI Persona CRUD (MySQL) - Elizabeth",
+    "name": "FastAPI Persona CRUD (MySQL) - Laboratorio 1",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_postman_id": "76fb5b8f-26f2-4cf3-a2b1-bfd7a1eb67f9"
   },
@@ -77,6 +77,132 @@
                 "personas",
                 "bulk",
                 "desactivar"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Laboratorio 1 - Felipe",
+      "item": [
+        {
+          "name": "Felipe - Poblar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cantidad\": 50\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/personas/poblar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "personas",
+                "poblar"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Felipe - Reset",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/personas/reset",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "personas",
+                "reset"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Felipe - Exportar CSV",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/personas/exportar/csv",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "personas",
+                "exportar",
+                "csv"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Laboratorio 1 - Sofia",
+      "item": [
+        {
+          "name": "Sofia - Estadisticas dominios",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/personas/estadisticas/dominios",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "personas",
+                "estadisticas",
+                "dominios"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Sofia - Estadisticas edad",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/personas/estadisticas/edad",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "personas",
+                "estadisticas",
+                "edad"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Sofia - Cumpleanios mes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/personas/cumpleanios/mes/12",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "personas",
+                "cumpleanios",
+                "mes",
+                "12"
               ]
             }
           }
@@ -217,4 +343,3 @@
     }
   ]
 }
-

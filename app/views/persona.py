@@ -57,6 +57,7 @@ class PersonaLabRead(BaseModel):
 
     model_config = {"from_attributes": True}
 
+    
 class PersonaActivaReport(BaseModel):
     """Projection for active users report."""
 
@@ -80,3 +81,20 @@ class BulkDesactivarResponse(BaseModel):
     desactivados: list[int]
     no_encontrados: list[int]
     total_desactivados: int
+=======
+
+class PoblarRequest(BaseModel):
+    """Schema for bulk populate request."""
+    cantidad: int
+
+
+class PoblarResponse(BaseModel):
+    """Schema for bulk populate response."""
+    message: str
+    status: int
+
+
+class ResetResponse(BaseModel):
+    """Schema for reset response."""
+    message: str
+    deleted_count: int
