@@ -1,8 +1,8 @@
 {
   "info": {
-    "name": "FastAPI Persona CRUD (MySQL) - Laboratorio 1",
+    "name": "FastAPI Persona CRUD (MySQL)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_postman_id": "76fb5b8f-26f2-4cf3-a2b1-bfd7a1eb67f9"
+    "_postman_id": "7d4b4d3a-8bf0-4a05-91b1-42f8f3e3f1d1"
   },
   "variable": [
     {
@@ -15,200 +15,6 @@
     }
   ],
   "item": [
-    {
-      "name": "Laboratorio 1 - Elizabeth",
-      "item": [
-        {
-          "name": "Elizabeth - Buscar",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/personas/buscar/lopez",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "personas",
-                "buscar",
-                "lopez"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Elizabeth - Reporte activos",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/personas/reporte/activos",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "personas",
-                "reporte",
-                "activos"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Elizabeth - Bulk desactivar",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"ids\": [3, 7, 14, 999]\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/personas/bulk/desactivar",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "personas",
-                "bulk",
-                "desactivar"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Laboratorio 1 - Felipe",
-      "item": [
-        {
-          "name": "Felipe - Poblar",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"cantidad\": 50\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/personas/poblar",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "personas",
-                "poblar"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Felipe - Reset",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/personas/reset",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "personas",
-                "reset"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Felipe - Exportar CSV",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/personas/exportar/csv",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "personas",
-                "exportar",
-                "csv"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Laboratorio 1 - Sofia",
-      "item": [
-        {
-          "name": "Sofia - Estadisticas dominios",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/personas/estadisticas/dominios",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "personas",
-                "estadisticas",
-                "dominios"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Sofia - Estadisticas edad",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/personas/estadisticas/edad",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "personas",
-                "estadisticas",
-                "edad"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Sofia - Cumpleanios mes",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/personas/cumpleanios/mes/12",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "personas",
-                "cumpleanios",
-                "mes",
-                "12"
-              ]
-            }
-          }
-        }
-      ]
-    },
     {
       "name": "Health",
       "request": {
@@ -337,6 +143,108 @@
                 "{{persona_id}}"
               ]
             }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Laboratorio 1 - Felipe",
+      "item": [
+        {
+          "name": "Felipe - Poblar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cantidad\": 50\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/personas/poblar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "personas",
+                "poblar"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Felipe - Reset",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/personas/reset",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "personas",
+                "reset"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Felipe - Exportar CSV",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/personas/exportar/csv",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "personas",
+                "exportar",
+                "csv"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Sofía - Estadísticas dominios",
+          "request": {
+          "method": "GET",
+          "url": {"raw": "{{base_url}}/personas/estadisticas/dominios",
+          "host": ["{{base_url}}"],
+          "path": ["personas", "estadisticas", "dominios"] }
+          }
+        },
+        {
+          "name": "Sofía - Estadísticas edad",
+          "request": {
+          "method": "GET",
+          "url": {"raw": "{{base_url}}/personas/estadisticas/edad",
+          "host": ["{{base_url}}"],
+          "path": ["personas", "estadisticas", "edad"] }
+          }
+        },
+        {
+          "name": "Sofía - Cumpleaños mes",
+          "request": {
+          "method": "GET",
+          "url": {"raw": "{{base_url}}/personas/cumpleanios/mes/12",
+          "host": ["{{base_url}}"],
+          "path": ["personas", "cumpleanios", "mes", "12"] }
+          }
+        },
+        {
+          "name": "Sofía - Cumpleaños mes inválido",
+          "request": {
+          "method": "GET",
+          "url": {"raw": "{{base_url}}/personas/cumpleanios/mes/13",
+          "host": ["{{base_url}}"],
+          "path": ["personas", "cumpleanios", "mes", "13"] }
           }
         }
       ]
