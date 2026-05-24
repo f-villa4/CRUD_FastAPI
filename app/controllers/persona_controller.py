@@ -1,4 +1,5 @@
-from typing import List
+from typing import Any, List
+
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
@@ -6,14 +7,17 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from ..views.persona import (
     PersonaCreate,
-    PersonaUpdate,
+    PersonaLabRead,
     PersonaRead,
+    PersonaUpdate,
     PoblarRequest,
     PoblarResponse,
     ResetResponse,
 )
+from ..services import persona_analitica_fechas
 from ..services import persona_service
 from ..services import persona_masivas
+
 
 router = APIRouter(prefix="/personas", tags=["personas"])
 
@@ -33,6 +37,40 @@ def list_personas(
 ):
     """List Personas with pagination via service layer."""
     return persona_service.list_personas(db, skip=skip, limit=limit)
+
+#analítica SQL y filtros por fecha
+
+@router.get("/estadisticas/dominios")
+def estadisticas_dominios(db: Session = Depends(get_db)) -> dict[str, int]:
+    """Count Personas per email domain."""
+    return persona_analitica_fechas.estadisticas_dominios(db)
+
+@router.get("/estadisticas/edad")
+def estadisticas_edad(db: Session = Depends(get_db)) -> dict[str, Any]:
+    """Average, min and max age from birth_date."""
+    return persona_analitica_fechas.estadisticas_edad(db)
+
+
+@router.get(
+    "/cumpleanios/mes/{numero_mes}",
+    response_model=List[PersonaLabRead]
+)
+def cumpleanios_mes(
+    numero_mes: int,
+    db: Session = Depends(get_db)
+):
+    """Personas with birthday in the given month (1-12)."""
+
+    if numero_mes < 1 or numero_mes > 12:
+        raise HTTPException(
+            status_code=400,
+            detail="El mes debe ser un entero entre 1 y 12.",
+        )
+
+    return persona_analitica_fechas.cumpleanios_por_mes(
+        db,
+        numero_mes
+    )
 
 
 # --- Lab: masivas y exportación CSV (Felipe Villa Velásquez) ---
