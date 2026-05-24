@@ -53,6 +53,73 @@ DATABASE_URL=mysql+pymysql://usuario:contraseña@localhost:3306/nombre_basedatos
 - `PUT /personas/{id}` → actualizar (parcial) persona
 - `DELETE /personas/{id}` → eliminar persona
 
+## Laboratorio 1 - Responsabilidades del equipo
+
+| Integrante | Puntos del laboratorio | Responsabilidad | Rama | Endpoints |
+|------------|------------------------|-----------------|------|-----------|
+| Felipe Villa Velasquez | Puntos 1 y 6 | Operaciones masivas y exportacion CSV | `feature/masivas` | `POST /personas/poblar`, `DELETE /personas/reset`, `GET /personas/exportar/csv` |
+
+### Endpoints de Felipe
+
+#### `POST /personas/poblar`
+
+Recibe una cantidad de registros y crea personas automaticamente usando Faker. El backend genera `first_name`, `last_name`, `email`, `phone`, `birth_date`, `is_active` y `notes`.
+
+Validacion:
+
+- `cantidad` debe estar entre 1 y 1000.
+- Si `cantidad <= 0` o `cantidad > 1000`, responde `400 Bad Request`.
+
+Request:
+
+```json
+{
+  "cantidad": 50
+}
+```
+
+Response `201 Created`:
+
+```json
+{
+  "message": "50 usuarios creados exitosamente",
+  "status": 201
+}
+```
+
+#### `DELETE /personas/reset`
+
+Elimina todos los registros de la tabla `personas` para reiniciar los datos del laboratorio.
+
+Response `200 OK`:
+
+```json
+{
+  "message": "Base de datos limpiada. Se eliminaron todos los registros.",
+  "deleted_count": 150
+}
+```
+
+#### `GET /personas/exportar/csv`
+
+Exporta todos los registros de `personas` en formato CSV para descargar o abrir en Excel/Pandas.
+
+Cabeceras esperadas:
+
+- `Content-Type: text/csv`
+- `Content-Disposition: attachment; filename="personas.csv"`
+
+Columnas exportadas:
+
+- `id`
+- `first_name`
+- `last_name`
+- `email`
+- `phone`
+- `birth_date`
+- `is_active`
+- `notes`
+
 ### Esquemas (JSON)
 
 - Crear:
